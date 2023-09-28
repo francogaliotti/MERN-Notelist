@@ -6,5 +6,7 @@ const router = express.Router();
 router.get("/", NotesController.index);
 router.get("/:id", NotesController.show)
 router.post("/", NotesController.create);
+router.patch("/:id", NotesController.update);
+router.delete("/:id", NotesController.destroy);
 
 export default router;
