@@ -3,35 +3,52 @@ import { Note as NoteModel } from '../models/note'
 import { Card } from "react-bootstrap"
 import styles from "../styles/Note.module.css"
 import { formatDate } from '../utils/formatDate'
+import { MdDelete } from "react-icons/md"
+import styleUtils from "./../styles/utils.module.css";
+
 
 interface NoteProps {
     note: NoteModel,
-    className?: string
+    className?: string,
+    onNoteClicked: (note: NoteModel) => void,
+    onDeleteNoteClicked: (note: NoteModel) => void,
 }
 
-export const Note = ({ note, className }: NoteProps) => {
-    const {title, text, createdAt, updatedAt} = note;
+export const Note = ({ note, onNoteClicked, onDeleteNoteClicked, className }: NoteProps) => {
+    const { title, text, createdAt, updatedAt } = note;
 
     let createdUpdatedText: string;
-    if (updatedAt > createdAt){
+    if (updatedAt > createdAt) {
         createdUpdatedText = "Updated: " + formatDate(updatedAt);
     } else {
         createdUpdatedText = "Created: " + formatDate(createdAt);
     }
 
-  return (
-    <Card className={`${styles.noteCard} ${className}`}>
-        <Card.Body className={styles.cardBody}>
-            <Card.Title>
-                {title}
-            </Card.Title>
-            <Card.Text className={styles.cardText}>
-                {text}
-            </Card.Text> 
-        </Card.Body>    
-        <Card.Footer className='text-muted'>
-            {createdUpdatedText}
-        </Card.Footer>   
-    </Card>
-  )
+    return (
+        <Card
+            className={`${styles.noteCard} ${className}`}
+            onClick={() => onNoteClicked(note)}
+        >
+            <Card.Body className={styles.cardBody}>
+                <Card.Title className={styleUtils.flexCenter}>
+                    {title}
+                    <MdDelete
+                        className="text-muted ms-auto"
+                        onClick={() => onDeleteNoteClicked(note)}
+                    />
+                </Card.Title>
+                <Card.Text
+                    className={styles.cardText}
+                    onClick={(e) => {
+                        onDeleteNoteClicked(note);
+                        e.stopPropagation();
+                    }}>
+                    {text}
+                </Card.Text>
+            </Card.Body>
+            <Card.Footer className='text-muted'>
+                {createdUpdatedText}
+            </Card.Footer>
+        </Card>
+    )
 }
