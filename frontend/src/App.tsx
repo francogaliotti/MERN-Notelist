@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Container, Button } from 'react-bootstrap';
+import { Row, Col, Container, Button, Spinner } from 'react-bootstrap';
 import { Note as NoteModel } from './models/note';
 import { Note } from './components/Note';
 import styles from "./styles/NotesPage.module.css";
@@ -12,14 +12,21 @@ function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
   const [showAddNoteDialog, setShowAddNoteDialog] = useState<boolean>(false)
   const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
+  const [notesLoading, setNotesLoading] = useState<boolean>(false);
+  const [showNotesLoadingError, setShowNotesLoadingError] = useState<boolean>(false);
 
   useEffect(() => {
     async function loadNotes() {
       try {
+        setShowNotesLoadingError(false);
+        setNotesLoading(true);
         const notes = await fetchNotes();
         setNotes(notes.reverse());
       } catch (error) {
         console.log(error)
+        setShowNotesLoadingError(true);
+      } finally {
+        setNotesLoading(false);
       }
 
     }
@@ -35,8 +42,22 @@ function App() {
     }
   }
 
+  const notesGrid =
+    <Row xs={1} md={2} xl={3} className={`g-4 ${styles.noteGrid}`}>
+      {notes.map((note) => (
+        <Col>
+          <Note
+            note={note}
+            className={styles.note}
+            onDeleteNoteClicked={deleteNote}
+            onNoteClicked={setNoteToEdit}
+          />
+        </Col>
+      ))}
+    </Row>
+
   return (
-    <Container>
+    <Container className={styles.notesPage}>
       <Button
         onClick={() => setShowAddNoteDialog(true)}
         className={`mb-4 ${styleUtils.blockCenter} ${styleUtils.flexCenter}`}
@@ -44,18 +65,13 @@ function App() {
         <FaPlus />
         Add new note
       </Button>
-      <Row xs={1} md={2} xl={3} className='g-4'>
-        {notes.map((note) => (
-          <Col>
-            <Note
-              note={note}
-              className={styles.note}
-              onDeleteNoteClicked={deleteNote}
-              onNoteClicked={setNoteToEdit}
-            />
-          </Col>
-        ))}
-      </Row>
+      {notesLoading && <Spinner animation='border' variant='primary' />}
+      {showNotesLoadingError && <div>Failed to load notes</div>}
+      {!notesLoading && !showNotesLoadingError && 
+        <>
+          { notes.length > 0 ? notesGrid : <div>No notes to show</div>}
+        </>
+      }
       {showAddNoteDialog &&
         <AddEditNoteDialog
           onDismiss={() => setShowAddNoteDialog(false)}

@@ -27,22 +27,21 @@ export const Note = ({ note, onNoteClicked, onDeleteNoteClicked, className }: No
     return (
         <Card
             className={`${styles.noteCard} ${className}`}
-            onClick={() => onNoteClicked(note)}
+            onClick={(e) => onNoteClicked(note)}
         >
             <Card.Body className={styles.cardBody}>
                 <Card.Title className={styleUtils.flexCenter}>
                     {title}
                     <MdDelete
                         className="text-muted ms-auto"
-                        onClick={() => onDeleteNoteClicked(note)}
+                        onClick={(e) => {
+                            onDeleteNoteClicked(note);
+                            e.stopPropagation();
+                        }}
                     />
                 </Card.Title>
                 <Card.Text
-                    className={styles.cardText}
-                    onClick={(e) => {
-                        onDeleteNoteClicked(note);
-                        e.stopPropagation();
-                    }}>
+                    className={styles.cardText}>
                     {text}
                 </Card.Text>
             </Card.Body>
