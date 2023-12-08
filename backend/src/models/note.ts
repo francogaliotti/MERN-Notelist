@@ -7,6 +7,10 @@ const noteSchema = new Schema({
     },
     text: {
         type: String
+    },
+    userId: {
+        type: Schema.Types.ObjectId,
+        required: true
     }
 }, { timestamps: true });
 

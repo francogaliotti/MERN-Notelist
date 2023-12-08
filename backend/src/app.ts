@@ -7,6 +7,7 @@ import createHttpError, { isHttpError } from "http-errors";
 import session from "express-session";
 import env from "./util/validateEnv";
 import MongoStore from "connect-mongo";
+import { requiresAuth } from "./middlewares/auth";
 
 const app = express();
 
@@ -28,7 +29,7 @@ app.use(session({
 }))
 
 app.use("/api/users", userRoutes);
-app.use("/api/notes", notesRoutes);
+app.use("/api/notes", requiresAuth, notesRoutes);
 
 app.use((req, res, next) => {
     next(createHttpError(404, "Endpoint not found"))
@@ -39,7 +40,7 @@ app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
     console.error(error);
     let errorMessage = "An unknown error occurred";
     let statusCode = 500;
-    if (isHttpError(error)){
+    if (isHttpError(error)) {
         statusCode = error.status;
         errorMessage = error.message;
     }
