@@ -11,6 +11,9 @@ const noteSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         required: true
+    },
+    categoryId: {
+        type: Schema.Types.ObjectId,
     }
 }, { timestamps: true });
 

@@ -2,6 +2,7 @@ import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import notesRoutes from "./routes/note_routes"
 import userRoutes from "./routes/user_routes";
+import categoriesRoutes from "./routes/category_routes";
 import morgan from "morgan";
 import createHttpError, { isHttpError } from "http-errors";
 import session from "express-session";
@@ -30,6 +31,7 @@ app.use(session({
 
 app.use("/api/users", userRoutes);
 app.use("/api/notes", requiresAuth, notesRoutes);
+app.use("/api/categories", categoriesRoutes);
 
 app.use((req, res, next) => {
     next(createHttpError(404, "Endpoint not found"))

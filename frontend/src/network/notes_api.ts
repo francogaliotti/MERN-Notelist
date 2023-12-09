@@ -1,4 +1,5 @@
 import { ConflictError, UnauthorizedError } from "../errors/http_errors";
+import { Category } from "../models/category";
 import { Note } from "../models/note";
 import { User } from "../models/user";
 
@@ -70,6 +71,7 @@ export async function fetchNotes(): Promise<Note[]> {
 export interface NoteInput {
     title: string,
     text?: string,
+    categoryId?: string,
 }
 
 export async function createNote(note: NoteInput): Promise<Note> {
@@ -98,4 +100,9 @@ export async function deleteNote(id: string): Promise<void> {
     await fetchData(`/api/notes/${id}`, {
         method: "DELETE"
     });
+}
+
+export async function fetchCategories(): Promise<Category[]> {
+    const res = await fetchData("/api/categories", {method: "GET"});
+    return res.json();
 }

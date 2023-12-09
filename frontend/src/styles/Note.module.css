@@ -8,5 +8,10 @@
 
 .cardBody {
     overflow: hidden;
-    mask-image: linear-gradient(180deg, #000 60%, transparent)
+    mask-image: linear-gradient(180deg, #000 60%, transparent);
+}
+
+.cardSubtitle {
+    font-size: 0.8rem;
+    color: #6c757d;
 }

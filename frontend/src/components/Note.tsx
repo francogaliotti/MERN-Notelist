@@ -12,9 +12,10 @@ interface NoteProps {
     className?: string,
     onNoteClicked: (note: NoteModel) => void,
     onDeleteNoteClicked: (note: NoteModel) => void,
+    categoryName?: string,
 }
 
-export const Note = ({ note, onNoteClicked, onDeleteNoteClicked, className }: NoteProps) => {
+export const Note = ({ note, onNoteClicked, onDeleteNoteClicked, className, categoryName }: NoteProps) => {
     const { title, text, createdAt, updatedAt } = note;
 
     let createdUpdatedText: string;
@@ -40,6 +41,10 @@ export const Note = ({ note, onNoteClicked, onDeleteNoteClicked, className }: No
                         }}
                     />
                 </Card.Title>
+                <Card.Subtitle
+                    className={styles.cardSubtitle}>
+                    {categoryName}
+                </Card.Subtitle>
                 <Card.Text
                     className={styles.cardText}>
                     {text}

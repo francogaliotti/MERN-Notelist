@@ -4,9 +4,10 @@ import { Note as NoteModel } from '../models/note';
 import { Note } from './Note';
 import styles from "../styles/NotesPage.module.css";
 import styleUtils from "../styles/utils.module.css";
-import { fetchNotes, deleteNote as apiDeleteNote } from '../network/notes_api';
+import { fetchNotes, deleteNote as apiDeleteNote, fetchCategories } from '../network/notes_api';
 import { AddEditNoteDialog } from './AddEditNoteDialog';
 import { FaPlus } from "react-icons/fa";
+import { Category } from '../models/category';
 
 
 export const NotesPageLoggedInView = () => {
@@ -16,6 +17,7 @@ export const NotesPageLoggedInView = () => {
     const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
     const [notesLoading, setNotesLoading] = useState<boolean>(false);
     const [showNotesLoadingError, setShowNotesLoadingError] = useState<boolean>(false);
+    const [categories, setCategories] = useState<Category[]>([]);
 
     useEffect(() => {
         async function loadNotes() {
@@ -30,9 +32,17 @@ export const NotesPageLoggedInView = () => {
             } finally {
                 setNotesLoading(false);
             }
-
+        }
+        async function loadCategories() {
+            try {
+                const categories = await fetchCategories();
+                setCategories(categories);
+            } catch (error) {
+                console.log(error)
+            }
         }
         loadNotes();
+        loadCategories();
     }, [])
 
     async function deleteNote(note: NoteModel) {
@@ -45,16 +55,19 @@ export const NotesPageLoggedInView = () => {
     }
     const notesGrid =
         <Row xs={1} md={2} xl={3} className={`g-4 ${styles.notesGrid}`}>
-            {notes.map((note) => (
-                <Col>
+            {notes.map((note) => {
+                const categoryName = categories.find(category => category._id === note.categoryId)?.name;
+                return (<Col>
                     <Note
                         note={note}
+                        categoryName={categoryName}
                         className={styles.note}
                         onDeleteNoteClicked={deleteNote}
                         onNoteClicked={setNoteToEdit}
                     />
                 </Col>
-            ))}
+                )
+            })}
         </Row>
     return (
         <>
@@ -74,6 +87,7 @@ export const NotesPageLoggedInView = () => {
             }
             {showAddNoteDialog &&
                 <AddEditNoteDialog
+                    categories={categories}
                     onDismiss={() => setShowAddNoteDialog(false)}
                     onNoteSaved={(newNote: NoteModel) => {
                         setNotes([newNote, ...notes])
@@ -84,6 +98,7 @@ export const NotesPageLoggedInView = () => {
             {
                 noteToEdit &&
                 <AddEditNoteDialog
+                    categories={categories}
                     noteToEdit={noteToEdit}
                     onDismiss={() => setNoteToEdit(null)}
                     onNoteSaved={(updatedNote: NoteModel) => {

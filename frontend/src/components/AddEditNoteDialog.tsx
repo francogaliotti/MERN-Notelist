@@ -1,26 +1,31 @@
 import { Button, Form, Modal } from 'react-bootstrap'
-import { Note } from '../models/note'
 import { useForm } from 'react-hook-form'
+import { Category } from '../models/category'
+import { Note } from '../models/note'
 import { NoteInput, createNote, updateNote } from '../network/notes_api'
+import { SelectField } from './forms/SelectField'
 import { TextInputField } from './forms/TextInputField'
 
 interface AddEditNoteDialogProps {
     noteToEdit?: Note,
     onDismiss: () => void,
-    onNoteSaved: (note: Note) => void
+    onNoteSaved: (note: Note) => void,
+    categories: Category[],
 }
 
-export const AddEditNoteDialog = ({ noteToEdit, onDismiss, onNoteSaved }: AddEditNoteDialogProps) => {
+export const AddEditNoteDialog = ({ noteToEdit, onDismiss, onNoteSaved, categories }: AddEditNoteDialogProps) => {
 
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<NoteInput>({
+    const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm<NoteInput>({
         defaultValues: {
             title: noteToEdit?.title || "",
-            text: noteToEdit?.text || ""
+            text: noteToEdit?.text || "",
+            categoryId: noteToEdit?.categoryId || ""
         }
     });
 
     async function onSubmit(input: NoteInput) {
         try {
+            console.log(input);
             let noteResponse: Note;
             if (noteToEdit) {
                 noteResponse = await updateNote(noteToEdit._id, input);
@@ -51,6 +56,15 @@ export const AddEditNoteDialog = ({ noteToEdit, onDismiss, onNoteSaved }: AddEdi
                         error={errors.title}
                         type='text'
                         placeholder='Enter title'
+                    />
+                    <SelectField
+                        name='categoryId'
+                        label='Category'
+                        register={register}
+                        options={categories}
+                        registerOptions={{ required: "Category is required" }}
+                        error={errors.categoryId}
+                        setValue={()=> setValue('categoryId', noteToEdit?.categoryId || "")}
                     />
                     <TextInputField
                         name='text'

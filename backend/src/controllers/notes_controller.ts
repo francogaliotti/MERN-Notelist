@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
-import Note from "../models/note";
 import createHttpError from "http-errors";
 import mongoose from "mongoose";
+import Note from "../models/note";
 import { assertIsDefined } from "../util/assertIsDefined";
 
 export const index: RequestHandler = async (req, res, next) => {
@@ -38,20 +38,29 @@ export const show: RequestHandler = async (req, res, next) => {
 
 interface CreateBody {
     title?: string,
-    text?: string
+    text?: string,
+    categoryId?: string
 }
 
 export const create: RequestHandler<unknown, unknown, CreateBody, unknown> = async (req, res, next) => {
-    const { title, text } = req.body;
+    const { title, text, categoryId } = req.body;
     const authUserId = req.session.userId;
+    let idCategory;
     try {
         assertIsDefined(authUserId);
         if (!title) {
             throw createHttpError(400, "Note must have a title");
         }
+        if (categoryId && !mongoose.isValidObjectId(categoryId)){
+            throw createHttpError(400, "Invalid category Id")
+        }
+        if (categoryId) {
+            idCategory = new mongoose.Types.ObjectId(categoryId)
+        }
         const note = await Note.create({
             title,
             text,
+            categoryId: idCategory,
             userId: authUserId
         });
         res.status(201).json(note);
@@ -66,17 +75,22 @@ interface UpdateParams {
 
 interface UpdateBody {
     title?: string,
-    text?: string
+    text?: string,
+    categoryId?: string
 }
 
 export const update: RequestHandler<UpdateParams, unknown, UpdateBody, unknown> = async(req, res, next) => {
-    const { title, text } = req.body;
+    const { title, text, categoryId } = req.body;
     const id = req.params.id;
     const authUserId = req.session.userId;
+    let idCategory;
     try {
         assertIsDefined(authUserId);
         if (!mongoose.isValidObjectId(id)){
             throw createHttpError(400, "Invalid Id")
+        }
+        if (categoryId && !mongoose.isValidObjectId(categoryId)){
+            throw createHttpError(400, "Invalid category Id")
         }
         if (!title) {
             throw createHttpError(400, "Note must have a title")
@@ -88,9 +102,13 @@ export const update: RequestHandler<UpdateParams, unknown, UpdateBody, unknown> 
         if (!note.userId.equals(authUserId)) {
             throw createHttpError(401, "User is not authorized to access this note");
         }
+        if (categoryId) {
+            idCategory = new mongoose.Types.ObjectId(categoryId)
+        }
 
         note.title = title;
         note.text = text;
+        note.categoryId = idCategory;
         note.userId = authUserId;
         
         const newNote = await note.save();
@@ -117,6 +135,21 @@ export const destroy: RequestHandler = async (req, res, next) => {
         }
         await note.deleteOne();
         res.sendStatus(204);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const indexByCategory: RequestHandler = async (req, res, next) => {
+    const categoryId = req.params.categoryId;
+    const authUserId = req.session.userId;
+    try {
+        assertIsDefined(authUserId);
+        if (!mongoose.isValidObjectId(categoryId)){
+            throw createHttpError(400, "Invalid category Id")
+        }
+        const notes = await Note.find({categoryId: categoryId, userId: authUserId}).exec();
+        res.status(200).json(notes);
     } catch (error) {
         next(error);
     }
