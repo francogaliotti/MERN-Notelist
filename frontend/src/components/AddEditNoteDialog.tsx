@@ -25,7 +25,6 @@ export const AddEditNoteDialog = ({ noteToEdit, onDismiss, onNoteSaved, categori
 
     async function onSubmit(input: NoteInput) {
         try {
-            console.log(input);
             let noteResponse: Note;
             if (noteToEdit) {
                 noteResponse = await updateNote(noteToEdit._id, input);

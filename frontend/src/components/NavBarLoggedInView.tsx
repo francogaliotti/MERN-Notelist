@@ -1,6 +1,6 @@
 import { Button, Navbar } from "react-bootstrap";
-import { User } from "../models/user"
-import { logout as apiLogout } from "../network/notes_api"
+import { User } from "../models/user";
+import { logout as apiLogout } from "../network/notes_api";
 
 interface NavBarLoggedInViewProps {
     user: User,

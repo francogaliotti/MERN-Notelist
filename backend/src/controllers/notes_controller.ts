@@ -8,7 +8,7 @@ export const index: RequestHandler = async (req, res, next) => {
     const authUserId = req.session.userId;
     try {
         assertIsDefined(authUserId);
-        const notes = await Note.find({userId: authUserId}).exec();
+        const notes = await Note.find({ userId: authUserId }).exec();
         res.status(200).json(notes);
     } catch (error) {
         next(error);
@@ -20,7 +20,7 @@ export const show: RequestHandler = async (req, res, next) => {
     const authUserId = req.session.userId;
     try {
         assertIsDefined(authUserId);
-        if (!mongoose.isValidObjectId(id)){
+        if (!mongoose.isValidObjectId(id)) {
             throw createHttpError(400, "Invalid Id")
         }
         const note = await Note.findById(id).exec();
@@ -51,7 +51,7 @@ export const create: RequestHandler<unknown, unknown, CreateBody, unknown> = asy
         if (!title) {
             throw createHttpError(400, "Note must have a title");
         }
-        if (categoryId && !mongoose.isValidObjectId(categoryId)){
+        if (categoryId && !mongoose.isValidObjectId(categoryId)) {
             throw createHttpError(400, "Invalid category Id")
         }
         if (categoryId) {
@@ -79,17 +79,17 @@ interface UpdateBody {
     categoryId?: string
 }
 
-export const update: RequestHandler<UpdateParams, unknown, UpdateBody, unknown> = async(req, res, next) => {
+export const update: RequestHandler<UpdateParams, unknown, UpdateBody, unknown> = async (req, res, next) => {
     const { title, text, categoryId } = req.body;
     const id = req.params.id;
     const authUserId = req.session.userId;
     let idCategory;
     try {
         assertIsDefined(authUserId);
-        if (!mongoose.isValidObjectId(id)){
+        if (!mongoose.isValidObjectId(id)) {
             throw createHttpError(400, "Invalid Id")
         }
-        if (categoryId && !mongoose.isValidObjectId(categoryId)){
+        if (categoryId && !mongoose.isValidObjectId(categoryId)) {
             throw createHttpError(400, "Invalid category Id")
         }
         if (!title) {
@@ -110,7 +110,7 @@ export const update: RequestHandler<UpdateParams, unknown, UpdateBody, unknown> 
         note.text = text;
         note.categoryId = idCategory;
         note.userId = authUserId;
-        
+
         const newNote = await note.save();
         res.status(200).json(newNote);
     } catch (error) {
@@ -123,7 +123,7 @@ export const destroy: RequestHandler = async (req, res, next) => {
     const authUserId = req.session.userId;
     try {
         assertIsDefined(authUserId);
-        if (!mongoose.isValidObjectId(id)){
+        if (!mongoose.isValidObjectId(id)) {
             throw createHttpError(400, "Invalid Id")
         }
         const note = await Note.findById(id).exec();
@@ -140,15 +140,29 @@ export const destroy: RequestHandler = async (req, res, next) => {
     }
 }
 
-export const indexByCategory: RequestHandler = async (req, res, next) => {
-    const categoryId = req.params.categoryId;
+interface FilterNoteBody {
+    categoryId?: string,
+    title?: string,
+}
+
+export const filterNote: RequestHandler<unknown, unknown, FilterNoteBody, unknown> = async (req, res, next) => {
     const authUserId = req.session.userId;
+    // eslint-disable-next-line prefer-const
+    let query: FilterNoteBody = {};
     try {
-        assertIsDefined(authUserId);
-        if (!mongoose.isValidObjectId(categoryId)){
-            throw createHttpError(400, "Invalid category Id")
+        if (req.body.categoryId) {
+            if (!mongoose.isValidObjectId(req.body.categoryId)) {
+                throw createHttpError(400, "Invalid category Id")
+            }
+            query.categoryId = req.body.categoryId;
         }
-        const notes = await Note.find({categoryId: categoryId, userId: authUserId}).exec();
+
+        if (req.body.title) {
+            query.title = req.body.title;
+        }
+
+        assertIsDefined(authUserId);
+        const notes = await Note.find({ userId: authUserId, ...query }).exec();
         res.status(200).json(notes);
     } catch (error) {
         next(error);

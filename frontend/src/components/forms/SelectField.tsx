@@ -31,7 +31,7 @@ export const SelectField = ({ name, label, options, register, registerOptions, e
                 {...props}
                 {...register(name, registerOptions)}
                 isInvalid={!!error}>
-                <option>Select category</option>
+                <option value=''>Select category</option>
                 {options.map((option: Option) => (
                     <option key={option._id} value={option._id}>{option.name}</option>
                 )

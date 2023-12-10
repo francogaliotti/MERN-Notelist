@@ -6,8 +6,9 @@ import styles from "../styles/NotesPage.module.css";
 import styleUtils from "../styles/utils.module.css";
 import { fetchNotes, deleteNote as apiDeleteNote, fetchCategories } from '../network/notes_api';
 import { AddEditNoteDialog } from './AddEditNoteDialog';
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaSearch } from "react-icons/fa";
 import { Category } from '../models/category';
+import FilterNoteDialog from './FilterNoteDialog';
 
 
 export const NotesPageLoggedInView = () => {
@@ -18,6 +19,7 @@ export const NotesPageLoggedInView = () => {
     const [notesLoading, setNotesLoading] = useState<boolean>(false);
     const [showNotesLoadingError, setShowNotesLoadingError] = useState<boolean>(false);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [showFilterNoteDialog, setShowFilterNoteDialog] = useState<boolean>(false);
 
     useEffect(() => {
         async function loadNotes() {
@@ -71,13 +73,22 @@ export const NotesPageLoggedInView = () => {
         </Row>
     return (
         <>
-            <Button
-                onClick={() => setShowAddNoteDialog(true)}
-                className={`mb-4 ${styleUtils.blockCenter} ${styleUtils.flexCenter}`}
-            >
-                <FaPlus />
-                Add new note
-            </Button>
+            <div className="d-flex gap-2">
+                <Button
+                    onClick={() => setShowAddNoteDialog(true)}
+                    className={`mb-4 ${styleUtils.blockCenter} ${styleUtils.flexCenter}`}
+                >
+                    <FaPlus />
+                    Add new note
+                </Button>
+                <Button
+                    onClick={() => setShowFilterNoteDialog(true)}
+                    className={`mb-4 ${styleUtils.blockCenter} ${styleUtils.flexCenter}`}
+                >
+                    <FaSearch />
+                    Filter notes
+                </Button>
+            </div>
             {notesLoading && <Spinner animation='border' variant='primary' />}
             {showNotesLoadingError && <div>Failed to load notes</div>}
             {!notesLoading && !showNotesLoadingError &&
@@ -104,6 +115,17 @@ export const NotesPageLoggedInView = () => {
                     onNoteSaved={(updatedNote: NoteModel) => {
                         setNotes(notes.map(existingNote => existingNote._id === updatedNote._id ? updatedNote : existingNote))
                         setNoteToEdit(null);
+                    }}
+                />
+            }
+            {
+                showFilterNoteDialog &&
+                <FilterNoteDialog
+                    categories={categories}
+                    onDismiss={() => setShowFilterNoteDialog(false)}
+                    onFilterNote={(notes: NoteModel[]) => {
+                        setShowFilterNoteDialog(false)
+                        setNotes(notes);
                     }}
                 />
             }

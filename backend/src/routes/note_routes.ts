@@ -8,6 +8,6 @@ router.get("/:id", NotesController.show)
 router.post("/", NotesController.create);
 router.patch("/:id", NotesController.update);
 router.delete("/:id", NotesController.destroy);
-router.get("/category/:id", NotesController.indexByCategory);
+router.post("/filter", NotesController.filterNote);
 
 export default router;
