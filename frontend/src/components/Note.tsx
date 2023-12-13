@@ -5,6 +5,7 @@ import styles from "../styles/Note.module.css"
 import { formatDate } from '../utils/formatDate'
 import { MdDelete } from "react-icons/md"
 import styleUtils from "./../styles/utils.module.css";
+import { useTranslation } from 'react-i18next';
 
 
 interface NoteProps {
@@ -17,12 +18,13 @@ interface NoteProps {
 
 export const Note = ({ note, onNoteClicked, onDeleteNoteClicked, className, categoryName }: NoteProps) => {
     const { title, text, createdAt, updatedAt } = note;
+    const [t, i18] = useTranslation("global")
 
     let createdUpdatedText: string;
     if (updatedAt > createdAt) {
-        createdUpdatedText = "Updated: " + formatDate(updatedAt);
+        createdUpdatedText = t("note.updated_at") + formatDate(updatedAt, i18.language);
     } else {
-        createdUpdatedText = "Created: " + formatDate(createdAt);
+        createdUpdatedText = t("note.created_at") + formatDate(createdAt, i18.language);
     }
 
     return (

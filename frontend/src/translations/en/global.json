@@ -1,0 +1,54 @@
+{
+    "note": {
+        "title": "Title",
+        "text": "Text",
+        "category": "Category",
+        "created_at": "Created: ",
+        "updated_at": "Updated: "
+    },
+    "buttons": {
+        "add_new_note": "Add new note",
+        "filter_notes": "Filter notes"
+    },
+    "note_actions": {
+        "add_note": "Add note",
+        "edit_note": "Edit note",
+        "save": "save",
+        "filter": "Filter"
+    },
+    "note_placeholders": {
+        "title": "Enter title",
+        "text": "Enter text",
+        "category": "Select category"
+    },
+    "auth_actions": {
+        "login": "Login",
+        "sign_up": "Sign up",
+        "logout": "Logout"
+    },
+    "user_attributes": {
+        "email": "Email",
+        "password": "Password",
+        "username": "Username"
+    },
+    "user_placeholders": {
+        "email": "Enter email",
+        "password": "Enter password",
+        "username": "Enter username"
+    },
+    "user_errors": {
+        "email": "Email is required",
+        "password": "Password is required",
+        "username": "Username is required"
+    },
+    "others": {
+        "no_notes": "No notes to show",
+        "not_logged_in": "Please log in to see your notes",
+        "privacy": "Privacy"
+    },
+    "languages": {
+        "language": "Language",
+        "en": "English",
+        "es": "Spanish"
+    }
+}

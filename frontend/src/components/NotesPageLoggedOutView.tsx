@@ -1,3 +1,7 @@
+import { useTranslation } from "react-i18next"
+
 export const NotesPageLoggedOutView = () => {
-  return <p>Please log in to see your notes</p>
+  const {t} = useTranslation("global")
+
+  return <p>{t("others.not_logged_in")}</p>
 }

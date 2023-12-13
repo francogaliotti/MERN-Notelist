@@ -5,6 +5,7 @@ import { TextInputField } from "./forms/TextInputField"
 import { SelectField } from "./forms/SelectField"
 import { FilterNoteObject, filterNotes } from "../network/notes_api"
 import { Note } from "../models/note"
+import { useTranslation } from "react-i18next"
 
 interface FilterNoteDialogProps {
     onDismiss: () => void,
@@ -15,6 +16,8 @@ interface FilterNoteDialogProps {
 const FilterNoteDialog = ({ onDismiss, onFilterNote, categories }: FilterNoteDialogProps) => {
     
     const { register, handleSubmit, formState: { isSubmitting } } = useForm<FilterNoteObject>();
+
+    const {t} = useTranslation("global")
 
     async function onSubmit(input: FilterNoteObject) {
         try {
@@ -38,17 +41,18 @@ const FilterNoteDialog = ({ onDismiss, onFilterNote, categories }: FilterNoteDia
                 <Form id="filterNotesForm" onSubmit={handleSubmit(onSubmit)}>
                     <TextInputField
                         name='title'
-                        label='Title'
+                        label={t("note.title")}
                         register={register}
                         type='text'
-                        placeholder='Enter title'
+                        placeholder={t("note_placeholders.title")}
                     />
                     <SelectField
                         name='categoryId'
-                        label='Category'
+                        label={t("note.category")}
                         register={register}
                         options={categories}
                         setValue={()=>{}}
+                        placeholder={t("note_placeholders.category")}
                     />
                 </Form>
             </Modal.Body>
@@ -57,7 +61,7 @@ const FilterNoteDialog = ({ onDismiss, onFilterNote, categories }: FilterNoteDia
                     type='submit'
                     form="filterNotesForm"
                     disabled={isSubmitting}
-                >Filter</Button>
+                >{t("note_actions.filter")}</Button>
             </Modal.Footer>
         </Modal>
     )

@@ -6,6 +6,7 @@ import { TextInputField } from "./forms/TextInputField";
 import styleUtils from "../styles/utils.module.css";
 import { useState } from "react";
 import { ConflictError } from "../errors/http_errors";
+import { useTranslation } from "react-i18next";
 
 interface SignUpModalProps {
     onDismiss: () => void,
@@ -15,6 +16,8 @@ interface SignUpModalProps {
 export const SignUpModal = ({ onDismiss, onSignUpSuccessful }: SignUpModalProps) => {
 
     const [errorText, setErrorText] = useState<string | null>(null);
+
+    const {t} = useTranslation("global")
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignUpCredentials>();
     async function onSubmit(credentials: SignUpCredentials) {
@@ -33,7 +36,7 @@ export const SignUpModal = ({ onDismiss, onSignUpSuccessful }: SignUpModalProps)
     return (
         <Modal show onHide={onDismiss}>
             <Modal.Header closeButton>
-                <Modal.Title>Sign Up</Modal.Title>
+                <Modal.Title>{t("auth_actions.sign_up")}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {errorText &&
@@ -44,33 +47,33 @@ export const SignUpModal = ({ onDismiss, onSignUpSuccessful }: SignUpModalProps)
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <TextInputField
                         name='username'
-                        label='Username'
+                        label={t("user_attributes.username")}
                         register={register}
-                        registerOptions={{ required: "Username is required" }}
+                        registerOptions={{ required: t("user_errors.username") }}
                         error={errors.username}
                         type='text'
-                        placeholder='Enter username'
+                        placeholder={t("user_placeholders.username")}
                     />
                     <TextInputField
                         name='email'
-                        label='Email'
+                        label={t("user_attributes.email")}
                         register={register}
-                        registerOptions={{ required: "Email is required" }}
+                        registerOptions={{ required: t("user_errors.email") }}
                         error={errors.email}
                         type='email'
-                        placeholder='Enter email'
+                        placeholder={t("user_placeholders.email")}
                     />
                     <TextInputField
                         name='password'
-                        label='Password'
+                        label={t("user_attributes.password")}
                         register={register}
-                        registerOptions={{ required: "Password is required" }}
+                        registerOptions={{ required: t("user_errors.password") }}
                         error={errors.password}
                         type='password'
-                        placeholder='Enter password'
+                        placeholder={t("user_errors.password")}
                     />
                     <Button type='submit' disabled={isSubmitting} className={styleUtils.width100}>
-                        Sign Up
+                        {t("auth_actions.sign_up")}
                     </Button>
                 </Form>
             </Modal.Body>

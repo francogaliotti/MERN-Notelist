@@ -1,0 +1,54 @@
+{
+    "note": {
+        "title": "Título",
+        "text": "Texto",
+        "category": "Categoría",
+        "created_at": "Creada: ",
+        "updated_at": "Actualizada: "
+    },
+    "buttons": {
+        "add_new_note": "Añadir nueva nota",
+        "filter_notes": "Filtrar notas"
+    },
+    "note_actions": {
+        "add_note": "Añadir nota",
+        "edit_note": "Editar nota",
+        "save": "Guardar",
+        "filter": "Filtrar"
+    },
+    "note_placeholders": {
+        "title": "Introducir título",
+        "text": "Introducir texto",
+        "category": "Seleccionar categoría"
+    },
+    "auth_actions": {
+        "login": "Iniciar sesión",
+        "sign_up": "Registrarse",
+        "logout": "Cerrar sesión"
+    },
+    "user_attributes": {
+        "email": "Email",
+        "password": "Contraseña",
+        "username": "Nombre de usuario"
+    },
+    "user_placeholders": {
+        "email": "Introducir email",
+        "password": "Introducir contraseña",
+        "username": "Introducir nombre de usuario"
+    },
+    "user_errors": {
+        "email": "El email es obligatorio",
+        "password": "La contraseña es obligatoria",
+        "username": "El nombre de usuario es obligatorio"
+    },
+    "others": {
+        "no_notes": "No hay notas",
+        "not_logged_in": "Por favor, inicia sesión para ver tus notas",
+        "privacy": "Privacidad"
+    },
+    "languages": {
+        "language": "Idioma",
+        "en": "Inglés",
+        "es": "Español"
+    }
+}

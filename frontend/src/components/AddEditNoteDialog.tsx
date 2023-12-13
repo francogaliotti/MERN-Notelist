@@ -5,6 +5,7 @@ import { Note } from '../models/note'
 import { NoteInput, createNote, updateNote } from '../network/notes_api'
 import { SelectField } from './forms/SelectField'
 import { TextInputField } from './forms/TextInputField'
+import { useTranslation } from 'react-i18next'
 
 interface AddEditNoteDialogProps {
     noteToEdit?: Note,
@@ -22,6 +23,7 @@ export const AddEditNoteDialog = ({ noteToEdit, onDismiss, onNoteSaved, categori
             categoryId: noteToEdit?.categoryId || ""
         }
     });
+    const {t} = useTranslation("global")
 
     async function onSubmit(input: NoteInput) {
         try {
@@ -42,36 +44,37 @@ export const AddEditNoteDialog = ({ noteToEdit, onDismiss, onNoteSaved, categori
         <Modal show onHide={onDismiss}>
             <Modal.Header closeButton>
                 <Modal.Title>
-                    {noteToEdit ? "Edit Note" : "Add Note"}
+                    {noteToEdit ? t("note_actions.edit_note") : t("note_actions.add_note")}
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form id="addEditNoteForm" onSubmit={handleSubmit(onSubmit)}>
                     <TextInputField
                         name='title'
-                        label='Title'
+                        label={t("note.title")}
                         register={register}
                         registerOptions={{ required: "Title is required" }}
                         error={errors.title}
                         type='text'
-                        placeholder='Enter title'
+                        placeholder={t("note_placeholders.title")}
                     />
                     <SelectField
                         name='categoryId'
-                        label='Category'
+                        label={t("note.category")}
                         register={register}
                         options={categories}
                         registerOptions={{ required: "Category is required" }}
                         error={errors.categoryId}
                         setValue={()=> setValue('categoryId', noteToEdit?.categoryId || "")}
+                        placeholder={t("note_placeholders.category")}
                     />
                     <TextInputField
                         name='text'
-                        label='Text'
+                        label={t("note.text")}
                         register={register}
                         as='textarea'
                         rows={5}
-                        placeholder='Enter text'
+                        placeholder={t("note_placeholders.text")}
                     />
                 </Form>
             </Modal.Body>
@@ -80,7 +83,7 @@ export const AddEditNoteDialog = ({ noteToEdit, onDismiss, onNoteSaved, categori
                     type='submit'
                     form="addEditNoteForm"
                     disabled={isSubmitting}
-                >Save</Button>
+                >{t("note_actions.save")}</Button>
             </Modal.Footer>
         </Modal>
     )

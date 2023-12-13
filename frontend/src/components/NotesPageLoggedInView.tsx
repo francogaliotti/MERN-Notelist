@@ -9,6 +9,7 @@ import { AddEditNoteDialog } from './AddEditNoteDialog';
 import { FaPlus, FaSearch } from "react-icons/fa";
 import { Category } from '../models/category';
 import FilterNoteDialog from './FilterNoteDialog';
+import { useTranslation } from 'react-i18next';
 
 
 export const NotesPageLoggedInView = () => {
@@ -20,6 +21,8 @@ export const NotesPageLoggedInView = () => {
     const [showNotesLoadingError, setShowNotesLoadingError] = useState<boolean>(false);
     const [categories, setCategories] = useState<Category[]>([]);
     const [showFilterNoteDialog, setShowFilterNoteDialog] = useState<boolean>(false);
+
+    const { t } = useTranslation("global")
 
     useEffect(() => {
         async function loadNotes() {
@@ -79,14 +82,14 @@ export const NotesPageLoggedInView = () => {
                     className={`mb-4 ${styleUtils.blockCenter} ${styleUtils.flexCenter}`}
                 >
                     <FaPlus />
-                    Add new note
+                    {t("buttons.add_new_note")}
                 </Button>
                 <Button
                     onClick={() => setShowFilterNoteDialog(true)}
                     className={`mb-4 ${styleUtils.blockCenter} ${styleUtils.flexCenter}`}
                 >
                     <FaSearch />
-                    Filter notes
+                    {t("buttons.filter_notes")}
                 </Button>
             </div>
             {notesLoading && <Spinner animation='border' variant='primary' />}

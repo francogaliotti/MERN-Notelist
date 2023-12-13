@@ -6,6 +6,7 @@ import { TextInputField } from "./forms/TextInputField";
 import styleUtils from "../styles/utils.module.css";
 import { useState } from "react";
 import { UnauthorizedError } from "../errors/http_errors";
+import { useTranslation } from "react-i18next";
 
 interface LoginModalProps {
     onDismiss: () => void,
@@ -15,14 +16,16 @@ interface LoginModalProps {
 export const LoginModal = ({ onDismiss, onLoginSuccessful }: LoginModalProps) => {
     const [errorText, setErrorText] = useState<string | null>(null);
 
-    const {register, handleSubmit, formState: {errors, isSubmitting}} = useForm<LoginCredentials>();
+    const { t } = useTranslation("global")
+
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginCredentials>();
 
     async function onSubmit(credentials: LoginCredentials) {
         try {
             const newUser = await login(credentials);
             onLoginSuccessful(newUser);
         } catch (error) {
-            if(error instanceof UnauthorizedError){
+            if (error instanceof UnauthorizedError) {
                 setErrorText(error.message);
             } else {
                 alert(error);
@@ -34,35 +37,35 @@ export const LoginModal = ({ onDismiss, onLoginSuccessful }: LoginModalProps) =>
     return (
         <Modal show onHide={onDismiss}>
             <Modal.Header closeButton>
-                <Modal.Title>Log In</Modal.Title>
+                <Modal.Title>{t("auth_actions.login")}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {errorText && 
+                {errorText &&
                     <Alert variant='danger'>
                         {errorText}
-                    </Alert>   
+                    </Alert>
                 }
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <TextInputField
                         name='username'
-                        label='Username'
+                        label={t("user_attributes.username")}
                         register={register}
-                        registerOptions={{required: "Username is required"}}
+                        registerOptions={{ required: t("user_errors.username") }}
                         error={errors.username}
                         type='text'
-                        placeholder='Enter username'
+                        placeholder={t("user_placeholders.username")}
                     />
                     <TextInputField
                         name='password'
-                        label='Password'
+                        label={t("user_attributes.password")}
                         register={register}
-                        registerOptions={{required: "Password is required"}}
+                        registerOptions={{ required: t("user_errors.password") }}
                         error={errors.password}
                         type='password'
-                        placeholder='Enter password'
+                        placeholder={t("user_errors.password")}
                     />
                     <Button type='submit' disabled={isSubmitting} className={styleUtils.width100}>
-                        Log In
+                        {t("auth_actions.login")}
                     </Button>
                 </Form>
             </Modal.Body>

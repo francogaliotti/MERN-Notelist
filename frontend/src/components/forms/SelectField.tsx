@@ -17,7 +17,7 @@ interface SelectFieldProps {
     [x: string]: any,
 }
 
-export const SelectField = ({ name, label, options, register, registerOptions, error, setValue, ...props }: SelectFieldProps) => {
+export const SelectField = ({ name, label, options, register, registerOptions, error, setValue, placeholder, ...props }: SelectFieldProps) => {
 
     useEffect(() => {
         setValue();
@@ -31,7 +31,7 @@ export const SelectField = ({ name, label, options, register, registerOptions, e
                 {...props}
                 {...register(name, registerOptions)}
                 isInvalid={!!error}>
-                <option value=''>Select category</option>
+                <option value=''>{placeholder}</option>
                 {options.map((option: Option) => (
                     <option key={option._id} value={option._id}>{option.name}</option>
                 )

@@ -1,12 +1,14 @@
 import { Button, Navbar } from "react-bootstrap";
 import { User } from "../models/user";
 import { logout as apiLogout } from "../network/notes_api";
+import { useTranslation } from "react-i18next";
 
 interface NavBarLoggedInViewProps {
     user: User,
     onLogoutSuccessful: () => void,
 }
 export const NavBarLoggedInView = ({ user, onLogoutSuccessful }: NavBarLoggedInViewProps) => {
+    const {t} = useTranslation("global")
 
     async function logout() {
         try {
@@ -20,9 +22,9 @@ export const NavBarLoggedInView = ({ user, onLogoutSuccessful }: NavBarLoggedInV
     return (
         <>
             <Navbar.Text>
-                Signed as: {user.username}
+                {user.username}
             </Navbar.Text>
-            <Button onClick={logout}>Log Out</Button>
+            <Button onClick={logout}>{t("auth_actions.logout")}</Button>
         </>
     )
 }
